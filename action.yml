@@ -40,7 +40,30 @@ inputs:
       If false, the action will fail if an artifact for the given name already exists.
       Does not fail if the artifact does not exist.
     default: 'false'
-
+  artifact-per-file:
+    description: enable otption for uploading one artifact per file
+    default: "false"
+  artifact-name-rule:
+    description: >
+      // https://nodejs.org/docs/latest-v20.x/api/path.html#pathparsepath
+      // Modified from path.parse()
+      path.parse('/home/user/dir/file.txt');
+      // Returns:
+      // { root: '/',
+      //   dir: '/home/user/dir',
+      //   base: 'file.txt',
+      //   ext: '.txt',
+      //   name: 'file' }
+      ┌─────────────────────┬────────────┐
+      │          dir        │    base    │
+      ├──────┬              ├──────┬─────┤
+      │ root │              │ name │ ext │
+      "  /    home/user/dir / file  .txt "
+      └──────┴──────────────┴──────┴─────┘
+      (All spaces in the "" line should be ignored. They are purely for formatting.)
+      Every key need in wrapper: ${}
+      sep just for prompt, can't be used
+    default: ${base}
 outputs:
   artifact-id:
     description: >
@@ -51,8 +74,8 @@ outputs:
     description: >
       A download URL for the artifact that was just uploaded. Empty if the artifact upload failed.
 
-      This download URL only works for requests Authenticated with GitHub. Anonymous downloads will be prompted to first login. 
-      If an anonymous download URL is needed than a short time restricted URL can be generated using the download artifact API: https://docs.github.com/en/rest/actions/artifacts#download-an-artifact    
+      This download URL only works for requests Authenticated with GitHub. Anonymous downloads will be prompted to first login.
+      If an anonymous download URL is needed than a short time restricted URL can be generated using the download artifact API: https://docs.github.com/en/rest/actions/artifacts#download-an-artifact
 
       This URL will be valid for as long as the artifact exists and the workflow run and repository exists. Once an artifact has expired this URL will no longer work.
       Common uses cases for such a download URL can be adding download links to artifacts in descriptions or comments on pull requests or issues.
